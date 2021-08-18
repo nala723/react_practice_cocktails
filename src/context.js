@@ -9,7 +9,7 @@ const AppProvider = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState("a");
   const [cocktails, setCocktails] = useState([]);
 
-  const fetchDrinks = async () => {
+  const fetchDrinks = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -19,7 +19,7 @@ const AppProvider = ({ children }) => {
       /*받은 응답 변수로 지정해서 그 속의 프로퍼티를 빼냄, if조건문 안에서 map해서 그 안의 
       값들 또 꺼냄!(콘솔에 찍어서 프로퍼티 확인)
        id 및 등등 객체로 저장해서 리턴!(맵이므로 저절로 배열로 나옴) -> 이것을 set~으로 상태변경! 
-       없으면 빈배열! either way you have to change the Loding state one you've done */
+       없으면 빈배열! either way you have to change the Loding state once you've done */
       const { drinks } = data;
       if (drinks) {
         const newCocktails = drinks.map((item) => {
@@ -47,10 +47,10 @@ const AppProvider = ({ children }) => {
       console.log(error);
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
   useEffect(() => {
     fetchDrinks();
-  }, [searchTerm]);
+  }, [searchTerm, fetchDrinks]);
 
   return (
     <AppContext.Provider
